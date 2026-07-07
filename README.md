@@ -49,6 +49,8 @@ PDF Loader → Chunking → Indexing
 
 ![system1 Page](screenshots/Architecture_1.png)
 
+## System Architecture 2nd flow
+
 ![System2 Page](screenshots/Architecture_2.png)
 ---
 
