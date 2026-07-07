@@ -263,7 +263,7 @@ If the required information is unavailable, it responds that the answer could no
 
 ## Home Page
 
-_Add screenshot here_
+![Home Page](screenshots/Home.png)
 
 ---
 
