@@ -1,5 +1,4 @@
-from langchain_core.output_parsers import StrOutputParser
-from langchain_core.runnables import RunnablePassthrough
+from typing import Dict, List
 
 from src.retrieval.retriever import Retriever
 from src.llm.gemini import GeminiLLM
@@ -7,60 +6,80 @@ from src.prompts.prompts import RAG_PROMPT
 
 
 class RAGService:
+    """
+    Main RAG service that retrieves relevant document chunks,
+    generates answers using Gemini, and returns citations.
+    """
 
     def __init__(self):
-
         self.retriever = Retriever()
-
         self.llm = GeminiLLM().get_llm()
 
-        self.parser = StrOutputParser()
+    def ask(self, question: str, k: int = 4) -> Dict:
+        """
+        Answer a user question using Retrieval-Augmented Generation (RAG).
 
-    def format_docs(self, docs):
+        Returns:
+            {
+                "answer": "...",
+                "citations": [
+                    {
+                        "source": "...",
+                        "page": 1,
+                        "snippet": "..."
+                    }
+                ]
+            }
+        """
 
-        context = []
+        # Retrieve relevant documents
+        documents = self.retriever.similarity_search(
+            query=question,
+            k=k
+        )
 
-        for doc in docs:
+        if not documents:
+            return {
+                "answer": "I couldn't find the answer in the provided documents.",
+                "citations": []
+            }
+
+        context = ""
+        citations: List[dict] = []
+
+        for doc in documents:
 
             source = doc.metadata.get("source", "Unknown")
-
             page = doc.metadata.get("page", "Unknown")
 
-            context.append(
-                f"""
-Source : {source}
-Page : {page}
+            snippet = doc.page_content[:250].replace("\n", " ")
+
+            citations.append(
+                {
+                    "source": source,
+                    "page": page,
+                    "snippet": snippet
+                }
+            )
+
+            context += f"""
+Source: {source}
+Page: {page}
 
 Content:
 {doc.page_content}
+
+----------------------------------------
 """
-            )
 
-        return "\n\n".join(context)
-
-    def build_chain(self):
-
-        retriever = self.retriever.get_retriever()
-
-        chain = (
-
-            {
-                "context": retriever | self.format_docs,
-                "question": RunnablePassthrough()
-            }
-
-            | RAG_PROMPT
-
-            | self.llm
-
-            | self.parser
-
+        prompt = RAG_PROMPT.format(
+            context=context,
+            question=question
         )
 
-        return chain
+        response = self.llm.invoke(prompt)
 
-    def ask(self, question: str):
-
-        chain = self.build_chain()
-
-        return chain.invoke(question)
+        return {
+            "answer": response.content,
+            "citations": citations
+        }
