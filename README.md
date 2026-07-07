@@ -45,7 +45,11 @@ Embeddings (BAAI/bge-small-en-v1.5)
           │
 PDF Loader → Chunking → Indexing
 ```
+## System Architecture 1st flow
 
+![system1 Page](screenshots/Architecture_1.png)
+
+![System2 Page](screenshots/Architecture_2.png)
 ---
 
 # ⚙️ Tech Stack
@@ -259,7 +263,7 @@ If the required information is unavailable, it responds that the answer could no
 
 ---
 
-# 📷 Screenshots
+#  Screenshots
 
 ## Home Page
 
@@ -269,25 +273,26 @@ If the required information is unavailable, it responds that the answer could no
 
 ## Question Answering
 
-_Add screenshot here_
+![Question Answering](screenshots/answer.png)
 
 ---
 
 ## Citations
 
-_Add screenshot here_
+![Citations](screenshots/cit.png)
 
 ---
 
 ## Swagger API
 
-_Add screenshot here_
+![Swagger](screenshots/swager.png)
 
 ---
 
 ## Qdrant Dashboard
 
-_Add screenshot here_
+![qdrant dasboard](screenshots/qdrant_dashboard.png)
+![qdrant](screenshots/qdrant.png)
 
 ---
 
@@ -308,7 +313,7 @@ _Add screenshot here_
 
 | Tool | Purpose |
 |------|----------|
-| ChatGPT | Architecture planning, debugging, code explanations, documentation |
+| ChatGPT | Coding |
 | Gemini | LLM for question answering |
 
 ---
